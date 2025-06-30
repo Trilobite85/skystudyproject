@@ -4,8 +4,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
+import org.sky.study.service.UserService;
 import org.sky.study.service.impl.JwtServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -13,6 +15,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -24,31 +29,31 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    JwtServiceImpl jwtService;
+    private final JwtServiceImpl jwtService;
+    private final UserDetailsService userService;
 
-    public JwtAuthenticationFilter(JwtServiceImpl jwtService) {
+    public JwtAuthenticationFilter(JwtServiceImpl jwtService, UserDetailsService userService) {
         this.jwtService = jwtService;
+        this.userService = userService;
     }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            try {
-                Claims claims = jwtService.getClaims(authHeader);
-                String username = claims.getSubject();
-                String roles = claims.get("roles", String.class);
-                // Validate roles and check if the token is expired
-                if ((roles.contains("USER") || roles.contains("ADMIN")) && !jwtService.isTokenExpired(authHeader)) {
-                    Authentication auth = new JwtAuthenticationToken(username, roles);
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+            Claims claims = jwtService.getClaims(authHeader);
+            String username = claims.getSubject();
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userService.loadUserByUsername(username);
+                if (!jwtService.isBlacklisted(authHeader.substring(7))) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails.getUsername(),
+                            userDetails.getPassword(),
+                            userDetails.getAuthorities());
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
-            } catch (ExpiredJwtException e) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Token has expired");
-                return;
-            } catch (SignatureException | MalformedJwtException e) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
-                return;
             }
         }
         chain.doFilter(request, response);

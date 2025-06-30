@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -16,7 +18,9 @@ public class JwtServiceImpl {
 
     @Value("${jwt.secret-key}")
     private String secretKey;
-    private static final Long VALIDITY = TimeUnit.MINUTES.toMillis(30);
+    private final Set<String> blacklist = new HashSet<>();
+
+    private static final Long VALIDITY = TimeUnit.MINUTES.toMillis(1);
 
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
@@ -36,8 +40,11 @@ public class JwtServiceImpl {
         return parseToken(token);
     }
 
-    public boolean isTokenExpired(String token) {
-        Date expiration = parseToken(token).getExpiration();
-        return expiration.before(new Date());
+    public void addToBlacklist(String token) {
+        blacklist.add(token); // For production, use a database or cache like Redis
+    }
+
+    public boolean isBlacklisted(String token) {
+        return blacklist.contains(token);
     }
 }

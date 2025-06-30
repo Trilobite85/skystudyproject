@@ -76,10 +76,9 @@ public class RatingServiceImpl implements RatingService {
      */
     @Override
     public void deleteUserRating(Long movieId, String username) {
-        log.info("Attempting to delete rating for user {} and movie ID {}", username, movieId);
+        log.info("Deleting rating for user {} and movie ID {}", username, movieId);
         Rating rating = ratingRepository.findByMovieIdAndUsername(movieId, username)
                 .orElseThrow(() -> new ResourceNotFoundException("Rating not found for movie ID: " + movieId + " and username: " + username));
-        log.info("Deleting rating for user {} and movie ID {}", username, movieId);
         ratingRepository.delete(rating);
     }
 

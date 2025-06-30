@@ -1,16 +1,19 @@
-package org.sky.study.config;
+package org.sky.study.security;
 
-import org.sky.study.security.JwtAuthenticationFilter;
+import org.sky.study.service.UserService;
 import org.sky.study.service.impl.JwtServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,10 +25,14 @@ public class SecurityConfig {
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     private final JwtServiceImpl jwtService;
+    private final UserDetailsService userService;
 
-    public SecurityConfig(JwtServiceImpl jwtService) {
+    @Autowired
+    public SecurityConfig(JwtServiceImpl jwtService, @Lazy UserDetailsService userService) {
         this.jwtService = jwtService;
+        this.userService = userService;
     }
+
     /**
      * Configures the security filter chain for the application.
      *
@@ -38,7 +45,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**", "/login", "/register","/error/**", "/movies/**").permitAll()
+                        .requestMatchers("/h2-console/**", "/auth/**", "/register","/error/**", "/movies/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -51,7 +58,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtService);
+        return new JwtAuthenticationFilter(jwtService, userService);
     }
 
     @Bean

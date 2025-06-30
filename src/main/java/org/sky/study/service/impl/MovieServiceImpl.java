@@ -131,15 +131,12 @@ public class MovieServiceImpl implements MovieService {
      */
     @Override
     public void deleteMovie(Long movieId) {
-        log.info("Attempting to delete movie with ID: {}", movieId);
+        log.info("Deleting movie with ID: {}", movieId);
         if (movieId == null) {
             throw new IllegalArgumentException("Movie ID must not be null");
         }
         movieRepository.findById(movieId).ifPresentOrElse(
-                movie -> {
-                    log.info("Deleting movie with id: {}", movieId);
-                    movieRepository.deleteById(movieId);
-                },
+                movie -> movieRepository.deleteById(movieId),
                 () -> {
                     throw new ResourceNotFoundException("Attempted to delete non-existent movie with id: " + movieId);
                 }

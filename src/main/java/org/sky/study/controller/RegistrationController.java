@@ -20,7 +20,7 @@ public class RegistrationController {
     @PostMapping
     public ResponseEntity<String> registerUser(@RequestBody User user) {
         if (userService.isUserExists(user.getUsername())) {
-            return ResponseEntity.badRequest().body("User already exists!");
+            throw new IllegalArgumentException("User with name " + user.getUsername() + " already exists!");
         }
         userService.registerUser(user);
         return ResponseEntity.ok("User registered successfully!");
