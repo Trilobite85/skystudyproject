@@ -30,10 +30,7 @@ public class RatingController {
     @GetMapping
     public ResponseEntity<Rating> getUserRatingByMovieId(@PathVariable Long movieId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        log.info("Fetching ratings for movie ID {} by user {}", movieId, username);
-        return ratingService.getRatingByMovieIdAndUserName(movieId, username)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(ratingService.getRatingByMovieIdAndUserName(movieId, username));
     }
 
     @PostMapping
@@ -51,7 +48,6 @@ public class RatingController {
     public ResponseEntity<Void> deleteRating(
             @PathVariable Long movieId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        log.info("User {} is deleting rating for movie ID {}", username, movieId);
         ratingService.deleteUserRating(movieId, username);
         return ResponseEntity.noContent().build();
     }

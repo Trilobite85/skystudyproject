@@ -66,7 +66,6 @@ public class MovieServiceImpl implements MovieService {
             spec = spec.and((root, query, criteriaBuilder) ->
                     criteriaBuilder.equal(root.get("releaseYear"), releaseYear));
         }
-
         Page<Movie> moviePage = movieRepository.findAll(spec, pageable);
         if (moviePage.isEmpty()) {
             throw new ResourceNotFoundException("No movies found for the given filters");

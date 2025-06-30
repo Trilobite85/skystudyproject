@@ -1,5 +1,6 @@
 package org.sky.study.service.impl;
 
+import org.sky.study.exception.ResourceNotFoundException;
 import org.sky.study.model.jpa.Movie;
 import org.sky.study.model.jpa.Rating;
 import org.sky.study.model.jpa.User;
@@ -19,7 +20,6 @@ public class RatingServiceImpl implements RatingService {
     private final RatingRepository ratingRepository;
     private final MovieRepository  movieRepository;
     private final UserRepository userRepository;
-
 
     private static final Logger log = LoggerFactory.getLogger(RatingServiceImpl.class);
 
@@ -76,8 +76,9 @@ public class RatingServiceImpl implements RatingService {
      */
     @Override
     public void deleteUserRating(Long movieId, String username) {
+        log.info("Attempting to delete rating for user {} and movie ID {}", username, movieId);
         Rating rating = ratingRepository.findByMovieIdAndUsername(movieId, username)
-                .orElseThrow(() -> new IllegalArgumentException("Rating not found for movie ID: " + movieId + " and username: " + username));
+                .orElseThrow(() -> new ResourceNotFoundException("Rating not found for movie ID: " + movieId + " and username: " + username));
         log.info("Deleting rating for user {} and movie ID {}", username, movieId);
         ratingRepository.delete(rating);
     }
@@ -89,10 +90,14 @@ public class RatingServiceImpl implements RatingService {
      * @return an Optional containing the rating if found, otherwise empty
      */
     @Override
-    public Optional<Rating> getRatingByMovieIdAndUserName(Long movieId, String username) {
+    public Rating getRatingByMovieIdAndUserName(Long movieId, String username) {
+        log.info("Fetching ratings for movie ID {} by user {}", movieId, username);
         if (movieId == null || username == null || username.isBlank()) {
             throw new IllegalArgumentException("Invalid input parameters: movieId and username must not be null or blank");
         }
-        return ratingRepository.findByMovieIdAndUsername(movieId, username);
+        return ratingRepository.findByMovieIdAndUsername(movieId, username).orElseThrow(() -> {;
+            log.warn("Rating not found for movie ID {} and username {}", movieId, username);
+            return new ResourceNotFoundException("Rating not found for movie ID " + movieId + " and username " + username);
+        });
     }
 }
