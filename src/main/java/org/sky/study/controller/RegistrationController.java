@@ -25,4 +25,10 @@ public class RegistrationController {
         userService.registerUser(user);
         return ResponseEntity.ok("User registered successfully!");
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.ok("User deleted successfully!");
+    }
 }

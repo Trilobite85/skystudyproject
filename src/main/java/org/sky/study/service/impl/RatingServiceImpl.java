@@ -12,8 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class RatingServiceImpl implements RatingService {
 
@@ -95,8 +93,8 @@ public class RatingServiceImpl implements RatingService {
             throw new IllegalArgumentException("Invalid input parameters: movieId and username must not be null or blank");
         }
         return ratingRepository.findByMovieIdAndUsername(movieId, username).orElseThrow(() -> {;
-            log.warn("Rating not found for movie ID {} and username {}", movieId, username);
-            return new ResourceNotFoundException("Rating not found for movie ID " + movieId + " and username " + username);
+            log.warn("Rating not found for movie ID {} added by {}", movieId, username);
+            return new ResourceNotFoundException("Rating not found for movie ID " + movieId + " added by " + username);
         });
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -51,7 +52,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
-                "Authentication required",
+                ex.getMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
@@ -61,7 +62,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleAuthenticationException(BadCredentialsException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
-                "Authentication required",
+                ex.getMessage(),
+                ((ServletWebRequest) request).getRequest().getRequestURI()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Object> handleAuthenticationException(UsernameNotFoundException ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
@@ -71,7 +81,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleAuthenticationException(SignatureException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
-                "Signature verification failed",
+                ex.getMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
@@ -81,7 +91,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleAuthenticationException(MalformedJwtException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
-                "Malformed Jwt token",
+                ex.getMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
@@ -91,7 +101,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.FORBIDDEN.value(),
-                "Access denied",
+                ex.getMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
@@ -101,7 +111,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleAccessDeniedException(ExpiredJwtException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.FORBIDDEN.value(),
-                "Token has expired",
+                ex.getMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
@@ -112,7 +122,7 @@ public class GlobalExceptionHandler {
         logger.error("Unexpected error occurred", ex);
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Unexpected error occurred",
+                ex.getMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

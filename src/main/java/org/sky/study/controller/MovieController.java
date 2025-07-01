@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/movies")
@@ -77,7 +76,6 @@ public class MovieController {
         Movie savedMovie = movieService.saveOrUpdateMovie(movie);
         log.info("Movie saved successfully with ID: {}", savedMovie.getId());
         return ResponseEntity.ok(savedMovie);
-
     }
 
     /**
