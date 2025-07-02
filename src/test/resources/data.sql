@@ -1,6 +1,5 @@
 -- Insert Admin and user
 INSERT INTO USERS (USERNAME, PASSWORD, ROLES) VALUES ('admin', '$2a$10$aOq6wLjD4LBB3h8W/rAmpOcQE2kXB1yPYM2dofiB5YGCS.U.RV.R2', 'ADMIN');
-INSERT INTO USERS (USERNAME, PASSWORD, ROLES) VALUES ('user', '$2a$10$aOq6wLjD4LBB3h8W/rAmpOcQE2kXB1yPYM2dofiB5YGCS.U.RV.R2', 'USER');
 
 -- Insert Movies (Top 10 IMDb Movies with genre and releaseYear)
 INSERT INTO MOVIES (TITLE, GENRE, RELEASE_YEAR) VALUES ('The Shawshank Redemption', 'Drama', 1994);

@@ -30,6 +30,9 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        if (loginRequest.getUsername() == null || loginRequest.getPassword() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username and password must not be empty");
+        }
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
