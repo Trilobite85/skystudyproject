@@ -18,7 +18,7 @@ class LoginControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    void loginSuccess() throws Exception {
+    void login_success() throws Exception {
         String json = "{\"username\":\"user\",\"password\":\"admin\"}";
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -28,7 +28,7 @@ class LoginControllerIntegrationTest {
     }
 
     @Test
-    void loginInvalidCredentials() throws Exception {
+    void login_invalid_credentials() throws Exception {
         String json = "{\"username\":\"user\",\"password\":\"wrong\"}";
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -37,7 +37,7 @@ class LoginControllerIntegrationTest {
     }
 
     @Test
-    void loginMissingCredentials() throws Exception {
+    void login_missing_credentials() throws Exception {
         String json = "{wrongJson}";
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -46,8 +46,8 @@ class LoginControllerIntegrationTest {
     }
 
     @Test
-    void logoutSuccess() throws Exception {
-        String loginJson = "{\"username\":\"user\",\"password\":\"admin\"}";
+    void logout_success() throws Exception {
+        String loginJson = "{\"username\":\"admin\",\"password\":\"admin\"}";
         String token = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginJson))
