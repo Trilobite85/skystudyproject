@@ -57,7 +57,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for H2 console
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
-               // .formLogin(Customizer.withDefaults());
         log.info("Security filter chain configured successfully.");
         return http.build();
     }
