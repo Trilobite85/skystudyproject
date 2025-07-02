@@ -35,7 +35,6 @@ class UserServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        // Clear SecurityContext before each test
         SecurityContextHolder.clearContext();
     }
 

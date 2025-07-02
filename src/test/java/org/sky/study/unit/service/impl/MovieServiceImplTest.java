@@ -107,6 +107,16 @@ class MovieServiceImplTest {
     }
 
     @Test
+    void getAllMovies_InvalidPagination() {
+        Pageable pageable = PageRequest.of(0, 1);
+        Page<Movie> moviePage = new PageImpl<>(List.of(), pageable, 0);
+
+        when(movieRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(moviePage);
+        assertThrows(IllegalArgumentException.class,
+                () -> movieService.getAllMoviesWithFilters(-1, 0, null, null, null));
+    }
+
+    @Test
     void getAllMovies_nonEmpty() {
         List<Movie> movies = List.of(
                 new Movie(6L, "Jaws", "Thriller"),
@@ -154,5 +164,7 @@ class MovieServiceImplTest {
         assertThrows(ResourceNotFoundException.class, () -> movieService.getTopRatedMovies());
         verify(movieRepository).findTopRatedMovies();
     }
+
+    //TODO: Add  tests for filtering movies by title, genre, and release year
 
 }
