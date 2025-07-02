@@ -14,6 +14,8 @@ public class Movie {
         this.genre = genre;
     }
 
+    public Movie() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
