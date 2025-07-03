@@ -77,7 +77,7 @@ class RatingServiceImplTest {
     void saveOrUpdateRating_userNotFound_throwsException() {
         when(ratingRepository.findByMovieIdAndUsername(1L, "user")).thenReturn(Optional.empty());
         when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
-        assertThrows(IllegalArgumentException.class, () -> ratingService.saveOrUpdateRating(1L, 5, "user"));
+        assertThrows(ResourceNotFoundException.class, () -> ratingService.saveOrUpdateRating(1L, 5, "user"));
     }
 
     @Test
@@ -87,7 +87,7 @@ class RatingServiceImplTest {
         when(ratingRepository.findByMovieIdAndUsername(1L, "user")).thenReturn(Optional.empty());
         when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
         when(movieRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(IllegalArgumentException.class, () -> ratingService.saveOrUpdateRating(1L, 5, "user"));
+        assertThrows(ResourceNotFoundException.class, () -> ratingService.saveOrUpdateRating(1L, 5, "user"));
     }
 
     @Test

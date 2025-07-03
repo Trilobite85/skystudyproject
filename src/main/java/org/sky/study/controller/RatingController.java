@@ -41,7 +41,7 @@ public class RatingController {
         String username = authentication.getName();
         log.info("User {} is saving or updating rating for movie ID {} with score {}", username, movieId, score.getScore());
         Rating savedRating = ratingService.saveOrUpdateRating(movieId, score.getScore(), username);
-        return ResponseEntity.ok(savedRating);
+        return ResponseEntity.status(201).body(savedRating);
     }
 
     @DeleteMapping

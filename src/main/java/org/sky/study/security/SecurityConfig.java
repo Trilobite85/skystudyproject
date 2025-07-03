@@ -44,7 +44,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**", "/auth/**", "/register").permitAll()
+                        .requestMatchers("/auth/**", "/register").permitAll()
                         .requestMatchers("/movies/top-rated").permitAll()
                         .requestMatchers("/movies/*/ratings").authenticated()
                         .requestMatchers(HttpMethod.POST,"/movies").hasRole("ADMIN")
@@ -55,7 +55,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for H2 console
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
         log.info("Security filter chain configured successfully.");
         return http.build();

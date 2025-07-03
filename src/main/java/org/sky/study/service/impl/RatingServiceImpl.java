@@ -55,9 +55,9 @@ public class RatingServiceImpl implements RatingService {
 
     private Rating createNewRating(Long movieId, Integer score, String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
         Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new IllegalArgumentException("Movie not found with ID: " + movieId));
+                .orElseThrow(() -> new ResourceNotFoundException("Movie not found with ID: " + movieId));
 
         Rating newRating = new Rating();
         newRating.setMovie(movie);
