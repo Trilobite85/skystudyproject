@@ -1,7 +1,7 @@
-FROM openjdk:20-jdk
+FROM openjdk:17-jdk-slim
 
-VOLUME /tmp
-ADD skystudyproject.jar /opt/skystudyproject/
+ADD skystudyproject.jar /app/
+
 EXPOSE 8080
-WORKDIR /opt/skystudyproject/
+WORKDIR /app
 CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-Xms512m", "-Xmx1g", "-jar", "skystudyproject.jar"]

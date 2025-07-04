@@ -16,7 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>org.sky.study.App</start-class>
-        <java.version>20</java.version>
+        <java.version>17</java.version>
         <docker.image.prefix>${user.name}</docker.image.prefix>
     </properties>
     <dependencies>
@@ -54,6 +54,11 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -140,6 +145,7 @@
                                     <zipfileset dir="${project.build.directory}/" includes="docker-compose.yml"/>
                                     <zipfileset dir="${project.build.directory}/" includes="Dockerfile"/>
                                     <zipfileset dir="${project.build.directory}" includes="${project.artifactId}.jar" />
+                                    <zipfileset dir="${project.build.directory}/" includes="filebeat"/>
                                 </zip>
                             </target>
                         </configuration>

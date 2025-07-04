@@ -22,5 +22,7 @@ spring:
 logging:
   level:
     root: DEBUG
+
+#TODO move to vault
 jwt:
   secret-key: my_secret_key
