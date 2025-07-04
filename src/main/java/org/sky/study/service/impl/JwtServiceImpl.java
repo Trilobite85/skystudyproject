@@ -19,10 +19,7 @@ public class JwtServiceImpl {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-    /**
-     * A simple in-memory blacklist for JWT tokens.
-     * In production, consider using a more persistent store like Redis.
-     */
+    //TODO consider using a more persistent storage for blacklisted tokens e.g. Redis
     private final Set<String> blacklist = new HashSet<>();
 
     private static final Long VALIDITY = TimeUnit.MINUTES.toMillis(30);
