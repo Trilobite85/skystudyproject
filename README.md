@@ -2,6 +2,12 @@
 
 A Spring Boot-based REST API for managing movies, featuring JWT authentication, role-based authorization, and Docker Compose deployment.
 
+## Pre-requisites:
+
+- **Java** 17
+- **Docker**
+- **Docker compose**
+  
 ## Exposed REST Endpoints
 
 - `POST /register` — Register a new user
