@@ -50,7 +50,3 @@ A Spring Boot-based REST API for managing movies, featuring JWT authentication, 
 3. **Access the API:**
    - The app will be available at `http://localhost:8080`.
 
-## Java and Spring Versions
-
-- **Java:** 20
-- **Spring Boot:** 3.3.3
