@@ -7,6 +7,19 @@ A Spring Boot-based REST API for managing movies, featuring JWT authentication, 
 - **Java** 17
 - **Docker**
 - **Docker compose**
+
+## Rollout Steps for Docker Compose
+
+1. **Build the JAR:**
+   ```sh
+   mvn clean package
+   ```
+2. **Build and start with Docker Compose from /docker folder:**
+   ```sh
+   docker-compose up --build
+   ```
+3. **Access the API:**
+    - The app will be available at `http://localhost:8080`.
   
 ## Exposed REST Endpoints
 
@@ -37,16 +50,4 @@ A Spring Boot-based REST API for managing movies, featuring JWT authentication, 
   - `GET /movies` and `GET /movies/{id}` are public.
 - User roles are included in the JWT and enforced via Spring Security.
 
-## Rollout Steps for Docker Compose
-
-1. **Build the JAR:**
-   ```sh
-   mvn clean package
-   ```
-2. **Build and start with Docker Compose:**
-   ```sh
-   docker-compose up --build
-   ```
-3. **Access the API:**
-   - The app will be available at `http://localhost:8080`.
 
