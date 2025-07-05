@@ -1,0 +1,58 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  skystudyproject:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: skystudyproject:latest
+    container_name: app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_REDIS_HOST: redis
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - app-network
+    depends_on:
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+  #postgres
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: testdb
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d testdb" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - app-network
+    ports:
+      - "5432:5432"
+
+networks:
+  app-network:
+    driver: bridge

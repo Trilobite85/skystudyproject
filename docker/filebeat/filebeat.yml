@@ -1,0 +1,17 @@
+filebeat.inputs:
+  - type: log
+    id: app-logs
+    enabled: true
+    paths:
+      - /app/logs/app.log
+
+setup.template.name: "filebeat"
+setup.template.pattern: "filebeat-*"
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "app-logs-%{+yyyy.MM.dd}"
+
+
+setup.kibana:
+  host: "http://kibana:5601"
