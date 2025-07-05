@@ -3,14 +3,15 @@ package org.sky.study.service.impl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -19,8 +20,10 @@ public class JwtServiceImpl {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-    //TODO consider using a more persistent storage for blacklisted tokens e.g. Redis
-    private final Set<String> blacklist = new HashSet<>();
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
+    private static final String BLACKLIST_PREFIX = "blacklist:";
 
     private static final Long VALIDITY = TimeUnit.MINUTES.toMillis(30);
 
@@ -44,11 +47,22 @@ public class JwtServiceImpl {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token.substring(7)).getBody();
     }
 
+    /**
+     * Add JWT token to Redis blacklist.
+     * @param token - JWT token to blacklist
+     */
     public void addToBlacklist(String token) {
-        blacklist.add(token); // For production, use a database or cache like Redis
+        String key = BLACKLIST_PREFIX + token;
+        redisTemplate.opsForValue().set(key, "true", VALIDITY);
     }
 
+    /**
+     * Check if a JWT token is blacklisted.
+     * @param token - JWT token to check
+     * @return true if the token is blacklisted, false otherwise
+     */
     public boolean isBlacklisted(String token) {
-        return blacklist.contains(token);
+        String key = BLACKLIST_PREFIX + token;
+        return redisTemplate.hasKey(key);
     }
 }

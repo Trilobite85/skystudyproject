@@ -1,6 +1,6 @@
 FROM openjdk:17-jdk-slim
 
-ADD skystudyproject.jar /app/
+ADD target/skystudyproject.jar /app/
 
 EXPOSE 8080
 WORKDIR /app

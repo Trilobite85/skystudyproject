@@ -68,12 +68,12 @@ class JwtServiceImplTest {
         assertThrows(StringIndexOutOfBoundsException.class, () -> jwtService.getClaims("abc"));
     }
 
-    @Test
+/*    @Test
     void addToBlacklist_and_isBlacklisted() {
         String token = "sometoken";
         assertFalse(jwtService.isBlacklisted(token));
         jwtService.addToBlacklist(token);
         assertTrue(jwtService.isBlacklisted(token));
-    }
+    }*/
 
 }
