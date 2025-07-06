@@ -12,32 +12,9 @@ services:
     networks:
       - app-network
 
-  skystudyproject:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    image: skystudyproject:latest
-    container_name: app
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_REDIS_HOST: redis
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - app-network
-    depends_on:
-      redis:
-        condition: service_started
-      postgres:
-        condition: service_healthy
-  #postgres
   postgres:
     image: postgres:15
+    container_name: postgres
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -46,12 +23,52 @@ services:
       test: [ "CMD-SHELL", "pg_isready -U user -d testdb" ]
       interval: 10s
       retries: 5
-      start_period: 30s
+      start_period: 50s
       timeout: 10s
     networks:
       - app-network
     ports:
       - "5432:5432"
+
+  skystudy:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: skystudyproject:latest
+    container_name: skystudy
+    volumes:
+      - ./logs:/app/logs
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_REDIS_HOST: redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - app-network
+    depends_on:
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.13.4
+    container_name: filebeat
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./logs:/app/logs
+    entrypoint: "filebeat -e -strict.perms=false"
+    depends_on:
+      elasticsearch:
+        condition: service_started
+    networks:
+      - app-network
 
 networks:
   app-network:

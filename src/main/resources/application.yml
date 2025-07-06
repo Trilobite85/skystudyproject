@@ -1,10 +1,4 @@
 spring:
-  security:
-    enabled: false
-  main:
-    show-banner: false
-    elasticsearch:
-      uris: http://localhost:9200
   datasource:
     url: jdbc:postgresql://postgres:5432/testdb
     driver-class-name: org.postgresql.Driver
@@ -24,7 +18,13 @@ spring:
     timeout: 2000ms
 logging:
   level:
-    root: INFO
+    org.sky.study: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
 
 #TODO move to vault
 jwt:
