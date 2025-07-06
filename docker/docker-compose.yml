@@ -2,6 +2,7 @@ services:
   redis:
     image: redis:latest
     container_name: redis
+    restart: unless-stopped
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
@@ -15,6 +16,7 @@ services:
   postgres:
     image: postgres:15
     container_name: postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -23,7 +25,7 @@ services:
       test: [ "CMD-SHELL", "pg_isready -U user -d testdb" ]
       interval: 10s
       retries: 5
-      start_period: 50s
+      start_period: 30s
       timeout: 10s
     networks:
       - app-network
@@ -57,9 +59,46 @@ services:
       postgres:
         condition: service_healthy
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: elasticsearch
+    restart: unless-stopped
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - logger.level=ERROR
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - 9200:9200
+    networks:
+      - app-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: kibana
+    restart: unless-stopped
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      skystudy:
+        condition: service_healthy
+    networks:
+      - app-network
+
   filebeat:
     image: docker.elastic.co/beats/filebeat:8.13.4
     container_name: filebeat
+    restart: unless-stopped
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - ./logs:/app/logs
