@@ -45,7 +45,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/register").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/actuator/health").permitAll()
                         .requestMatchers("/movies/top-rated").permitAll()
                         .requestMatchers("/movies/*/ratings").authenticated()
                         .requestMatchers(HttpMethod.POST,"/movies").hasRole("ADMIN")
