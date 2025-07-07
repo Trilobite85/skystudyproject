@@ -2,22 +2,15 @@ package org.sky.study.integration.controller;
 
 import org.junit.jupiter.api.Test;
 import org.sky.study.service.MovieService;
-import org.sky.study.model.jpa.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class MovieControllerIntegrationTest {
+class MovieControllerIntegrationTest extends SpringBootApplicationTest{
 
     @Autowired
     private MockMvc mockMvc;
@@ -64,9 +57,9 @@ class MovieControllerIntegrationTest {
     @Test
     @WithMockUser(roles = "USER")
     void get_movie_success() throws Exception {
-        mockMvc.perform(get("/movies/2"))
+        mockMvc.perform(get("/movies/3"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("The Godfather"));
+                .andExpect(jsonPath("$.title").value("The Dark Knight"));
     }
 
     @Test
@@ -77,7 +70,7 @@ class MovieControllerIntegrationTest {
     @Test
     @WithMockUser
     void delete_movies_non_Admin_forbidden() throws Exception {
-        mockMvc.perform(delete("/movies/1")).andExpect(status().isForbidden());
+        mockMvc.perform(delete("/movies/6")).andExpect(status().isForbidden());
     }
 
     @Test
@@ -90,7 +83,7 @@ class MovieControllerIntegrationTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void admin_deletes_movie() throws Exception {
-        mockMvc.perform(delete("/movies/1"))
+        mockMvc.perform(delete("/movies/9"))
                 .andExpect(status().isNoContent());
     }
 }
