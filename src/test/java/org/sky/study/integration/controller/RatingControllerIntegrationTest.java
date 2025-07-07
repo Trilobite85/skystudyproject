@@ -11,9 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class RatingControllerIntegrationTest {
+class RatingControllerIntegrationTest extends SpringBootApplicationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -27,7 +25,7 @@ class RatingControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    @WithMockUser(username = "user")
     void rate_nonexisting_movie_not_found() throws Exception {
         mockMvc.perform(post("/movies/999/ratings")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -36,7 +34,7 @@ class RatingControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    @WithMockUser(username = "user")
     void rate_movie_with_invalid_input_bad_request() throws Exception {
         mockMvc.perform(post("/movies/2/ratings")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -45,7 +43,7 @@ class RatingControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    @WithMockUser(username = "user")
     void rate_movie_success() throws Exception {
         mockMvc.perform(post("/movies/2/ratings")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -55,14 +53,14 @@ class RatingControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    @WithMockUser(username = "admin")
     void get_ratings_for_movie_success() throws Exception {
-        mockMvc.perform(get("/movies/2/ratings"))
+        mockMvc.perform(get("/movies/3/ratings"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(roles = "USER")
+    @WithMockUser(username = "user")
     void delete_ratings_for_movie_success() throws Exception {
         mockMvc.perform(delete("/movies/2/ratings"))
                 .andExpect(status().isNoContent());

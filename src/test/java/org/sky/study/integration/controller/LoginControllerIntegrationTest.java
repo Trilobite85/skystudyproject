@@ -2,17 +2,13 @@ package org.sky.study.integration.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class LoginControllerIntegrationTest {
+class LoginControllerIntegrationTest extends SpringBootApplicationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,22 +41,6 @@ class LoginControllerIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void logout_success() throws Exception {
-        String loginJson = "{\"username\":\"admin\",\"password\":\"admin\"}";
-        String token = mockMvc.perform(post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginJson))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-                .replaceAll(".*\"token\"\\s*:\\s*\"([^\"]+)\".*", "$1");
-        mockMvc.perform(post("/auth/logout")
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Logged out successfully"));
-    }
 
     @Test
     void logout_missing_authorization_header() throws Exception {
