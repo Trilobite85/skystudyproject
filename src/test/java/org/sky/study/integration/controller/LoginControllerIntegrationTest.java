@@ -15,7 +15,7 @@ class LoginControllerIntegrationTest extends SpringBootApplicationTest {
 
     @Test
     void login_success() throws Exception {
-        String json = "{\"username\":\"user\",\"password\":\"admin\"}";
+        String json = "{\"username\":\"admin\",\"password\":\"admin\"}";
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))

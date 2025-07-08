@@ -25,11 +25,27 @@ class RegistrationControllerIntegrationTest extends SpringBootApplicationTest {
 
     @Test
     void register_user_already_exists() throws Exception {
-        String regJson = "{\"username\":\"admin\",\"password\":\"admin\"}";
+        String regJson = "{\"username\":\"user\",\"password\":\"admin\"}";
         mockMvc.perform(post("/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(regJson))
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void delete_user_success() throws Exception {
+        String loginJson = "{\"username\":\"admin\",\"password\":\"admin\"}";
+        String token = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginJson))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString()
+                .replaceAll(".*\"token\"\\s*:\\s*\"([^\"]+)\".*", "$1");
+        mockMvc.perform(delete("/register/1")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(content().string("User deleted successfully!"));
+    }
 }
