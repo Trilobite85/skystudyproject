@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        logger.info("Attempting login for user: {}", username);
+        logger.info("Attempting to load user : {}", username);
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User with " + username + " not found"));
         // Convert User entity to Spring Security UserDetails
