@@ -1,0 +1,17 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+  autoconfigure:
+    include: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+  sql:
+    init:
+      mode: always
+jwt:
+  secret-key: my_secret_key
+logging:
+  level:
+    root: INFO

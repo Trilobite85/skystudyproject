@@ -1,11 +1,11 @@
 package org.sky.study.controller;
 
+import io.jsonwebtoken.Claims;
 import org.sky.study.service.impl.JwtServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,7 +49,9 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Authorization header");
         }
         String token = authHeader.substring(7);
+        Claims claims = jwtServiceImpl.getClaims(authHeader);
         jwtServiceImpl.addToBlacklist(token);
+        logger.info("Token was invalidated for user: {}", claims.getSubject());
         return ResponseEntity.ok("Logged out successfully");
     }
 }
