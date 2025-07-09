@@ -41,6 +41,22 @@ class LoginControllerIntegrationTest extends SpringBootApplicationTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void logout_success() throws Exception {
+        String loginJson = "{\"username\":\"user\",\"password\":\"admin\"}";
+        String token = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginJson))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString()
+                .replaceAll(".*\"token\"\\s*:\\s*\"([^\"]+)\".*", "$1");
+        mockMvc.perform(post("/auth/logout")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Logged out successfully"));
+    }
 
     @Test
     void logout_missing_authorization_header() throws Exception {
