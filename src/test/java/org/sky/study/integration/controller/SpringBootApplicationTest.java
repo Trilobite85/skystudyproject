@@ -14,7 +14,6 @@ import org.testcontainers.utility.DockerImageName;
  * Parent class for Postgres and Redis test containers.
  */
 @SpringBootTest(properties = "spring.profiles.active=test")
-@Testcontainers
 @AutoConfigureMockMvc
 public class SpringBootApplicationTest {
 
@@ -24,25 +23,27 @@ public class SpringBootApplicationTest {
     private static final String USERNAME = "user";
     private static final String PASSWORD = "password";
     private static final int REDIS_PORT = 6379;
+    private static final PostgreSQLContainer<?> POSTGRES_CONTAINER;
+    private static final GenericContainer<?> REDIS_CONTAINER;
 
-    @Container
-    public static PostgreSQLContainer<?> postgreContainer = new PostgreSQLContainer<>(POSTGRES_IMAGE)
-            .withDatabaseName(DATABASE_NAME)
-            .withUsername(USERNAME)
-            .withPassword(PASSWORD);
-
-    @Container
-    public static GenericContainer<?> redisContainer =
-            new GenericContainer<>(DockerImageName.parse(REDIS_IMAGE))
-                    .withExposedPorts(REDIS_PORT);
+    static {
+        POSTGRES_CONTAINER = new PostgreSQLContainer<>(POSTGRES_IMAGE)
+                .withDatabaseName(DATABASE_NAME)
+                .withUsername(USERNAME)
+                .withPassword(PASSWORD);
+        REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse(REDIS_IMAGE))
+                .withExposedPorts(REDIS_PORT);
+        POSTGRES_CONTAINER.start();
+        REDIS_CONTAINER.start();
+    }
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreContainer::getUsername);
-        registry.add("spring.datasource.password", postgreContainer::getPassword);
-        registry.add("spring.data.redis.host", redisContainer::getHost);
-        registry.add("spring.data.redis.port", redisContainer::getFirstMappedPort);
+        registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
+        registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
+        registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
+        registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.data.redis.port", REDIS_CONTAINER::getFirstMappedPort);
     }
 
 }

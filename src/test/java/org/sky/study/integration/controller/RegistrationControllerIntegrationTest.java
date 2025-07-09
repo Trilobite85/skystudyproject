@@ -43,7 +43,7 @@ class RegistrationControllerIntegrationTest extends SpringBootApplicationTest {
                 .getResponse()
                 .getContentAsString()
                 .replaceAll(".*\"token\"\\s*:\\s*\"([^\"]+)\".*", "$1");
-        mockMvc.perform(delete("/register/1")
+        mockMvc.perform(delete("/register/3")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(content().string("User deleted successfully!"));
