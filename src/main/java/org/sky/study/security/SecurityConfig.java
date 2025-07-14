@@ -26,11 +26,13 @@ public class SecurityConfig {
 
     private final JwtServiceImpl jwtService;
     private final UserDetailsService userService;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
     @Autowired
-    public SecurityConfig(JwtServiceImpl jwtService, @Lazy UserDetailsService userService) {
+    public SecurityConfig(JwtServiceImpl jwtService, @Lazy UserDetailsService userService, JwtAuthenticationEntryPoint authenticationEntryPoint) {
         this.jwtService = jwtService;
         this.userService = userService;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     /**
@@ -56,6 +58,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint))
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
         log.info("Security filter chain configured successfully.");
