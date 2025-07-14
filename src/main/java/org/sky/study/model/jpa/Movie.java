@@ -8,14 +8,6 @@ import java.util.Set;
 @Table(name = "MOVIES")
 public class Movie {
 
-    public Movie(Long id, String title, String genre) {
-        this.id = id;
-        this.title = title;
-        this.genre = genre;
-    }
-
-    public Movie() {}
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,6 +17,14 @@ public class Movie {
     private String genre;
 
     private Integer releaseYear;
+
+    public Movie() {}
+
+    public Movie(Long id, String title, String genre) {
+        this.id = id;
+        this.title = title;
+        this.genre = genre;
+    }
 
     @JsonIgnore
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -19,8 +19,13 @@ class MovieControllerIntegrationTest extends SpringBootApplicationTest{
     private MovieService movieService;
 
     @Test
-    void getMovies_permitAll() throws Exception {
+    void getMovies_All() throws Exception {
         mockMvc.perform(get("/movies")).andExpect(status().isOk());
+    }
+
+    @Test
+    void getMovies_withFilters() throws Exception {
+        mockMvc.perform(get("/movies?title=Pulp Fiction&releaseYear=1994&page=0&size=1&genre=Crime")).andExpect(status().isOk());
     }
 
     @Test

@@ -51,17 +51,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
-        logger.error("Authentication failed: ", ex);
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.UNAUTHORIZED.value(),
-                ex.getMessage(),
-                ((ServletWebRequest) request).getRequest().getRequestURI()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
-    }
-
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleAuthenticationException(BadCredentialsException ex, WebRequest request) {
         logger.error("Bad credentials: ", ex);
@@ -94,31 +83,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(MalformedJwtException.class)
-    public ResponseEntity<Object> handleAuthenticationException(MalformedJwtException ex, WebRequest request) {
-        logger.error("Malformed jwt: ", ex);
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.UNAUTHORIZED.value(),
-                ex.getMessage(),
-                ((ServletWebRequest) request).getRequest().getRequestURI()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
-    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
         logger.error("Access denied: ", ex);
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.FORBIDDEN.value(),
-                ex.getMessage(),
-                ((ServletWebRequest) request).getRequest().getRequestURI()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<Object> handleAccessDeniedException(ExpiredJwtException ex, WebRequest request) {
-        logger.error("Jwt expired: ", ex);
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.FORBIDDEN.value(),
                 ex.getMessage(),

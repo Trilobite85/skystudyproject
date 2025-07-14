@@ -19,7 +19,12 @@ A Spring Boot-based REST API for managing movies, featuring JWT authentication, 
    docker-compose up --build
    ```
 3. **Access the API:**
-    - The app will be available at `http://localhost:8080`.
+    - The app will be available at `http://localhost:8080`
+   
+
+4. **API documentation:**
+    - The documentation will be available at `http://localhost:8080/swagger-ui/index.html`
+
   
 ## Exposed REST Endpoints
 

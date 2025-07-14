@@ -1,19 +1,21 @@
 package org.sky.study.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
 
     private int status;
 
     private String message;
 
+    private String path;
+
     public ErrorResponse(int status, String message, String path) {
         this.status = status;
         this.message = message;
         this.path = path;
     }
-
-    private String path;
-
 
     public String getMessage() {
         return message;

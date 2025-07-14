@@ -1,6 +1,7 @@
 package org.sky.study.unit.service.impl;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.MalformedJwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -58,6 +59,12 @@ class JwtServiceImplTest {
     }
 
     @Test
+    void getClaims_expiredToken_throwsException() {
+        String invalidToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1MjE0MTM0Mywicm9sZXMiOiJbUk9MRV9BRE1JTl0iLCJleHAiOjE3NTIxNDMxNDN9.4XCnO4CmT1BpX9JhjXi9gBbShnjL8-ijf8CNP3GTZtM";
+        assertThrows(MalformedJwtException.class, () -> jwtService.getClaims(invalidToken));
+    }
+
+    @Test
     void getClaims_nullToken_throwsException() {
         assertThrows(NullPointerException.class, () -> jwtService.getClaims(null));
     }
@@ -67,13 +74,5 @@ class JwtServiceImplTest {
         // Token shorter than 7 chars (no "Bearer ")
         assertThrows(StringIndexOutOfBoundsException.class, () -> jwtService.getClaims("abc"));
     }
-
-/*    @Test
-    void addToBlacklist_and_isBlacklisted() {
-        String token = "sometoken";
-        assertFalse(jwtService.isBlacklisted(token));
-        jwtService.addToBlacklist(token);
-        assertTrue(jwtService.isBlacklisted(token));
-    }*/
 
 }

@@ -19,7 +19,7 @@ class RatingControllerIntegrationTest extends SpringBootApplicationTest {
         mockMvc.perform(post("/movies/1/ratings")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"score\":5}"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

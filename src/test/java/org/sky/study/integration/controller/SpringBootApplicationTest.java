@@ -6,8 +6,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 /**
@@ -23,6 +21,7 @@ public class SpringBootApplicationTest {
     private static final String USERNAME = "user";
     private static final String PASSWORD = "password";
     private static final int REDIS_PORT = 6379;
+
     private static final PostgreSQLContainer<?> POSTGRES_CONTAINER;
     private static final GenericContainer<?> REDIS_CONTAINER;
 
